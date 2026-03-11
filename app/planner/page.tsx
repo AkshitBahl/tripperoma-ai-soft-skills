@@ -1,4 +1,6 @@
 "use client";
+
+import { useSession, signIn, signOut } from "next-auth/react"; // ✅ single import
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
@@ -38,7 +40,6 @@ function TypingDots() {
 function MessageBubble({ msg }: { msg: Message }) {
   const isUser = msg.role === "user";
 
-  // Parse assistant messages for structured itinerary rendering
   const renderContent = (text: string) => {
     const lines = text.split("\n");
     return lines.map((line, i) => {
@@ -124,6 +125,8 @@ function MessageBubble({ msg }: { msg: Message }) {
 }
 
 export default function PlannerPage() {
+  // ✅ ALL hooks declared first, before any conditional returns
+  const { data: session, status } = useSession();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -132,9 +135,17 @@ export default function PlannerPage() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  // ✅ useEffect also before any conditional returns
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  // ✅ Conditional returns AFTER all hooks
+  if (status === "loading") return <div style={{ background: "#0a0a0f", minHeight: "100vh" }} />;
+  if (!session) {
+    signIn();
+    return null;
+  }
 
   const sendMessage = async (text?: string) => {
     const content = text || input.trim();
@@ -182,7 +193,7 @@ export default function PlannerPage() {
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Cormorant Garamond', Georgia, serif; }
-        
+
         @keyframes typingBounce {
           0%, 60%, 100% { transform: translateY(0); }
           30% { transform: translateY(-6px); }
@@ -253,23 +264,43 @@ export default function PlannerPage() {
             EUROTRIP <em>AI</em>
           </span>
         </Link>
+
         <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "0.2em", opacity: 0.4, color: "#c4a064" }}>
           ◦ TRIP PLANNER ◦
         </div>
-        {messages.length > 0 && (
+
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          {messages.length > 0 && (
+            <button
+              onClick={() => { setMessages([]); setStarted(false); setError(""); }}
+              style={{
+                fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "0.15em",
+                color: "rgba(232,228,217,0.4)", background: "transparent", border: "1px solid rgba(255,255,255,0.08)",
+                padding: "6px 14px", cursor: "pointer",
+              }}
+            >
+              NEW TRIP
+            </button>
+          )}
+          {/* ✅ User avatar + sign out */}
+          {session.user?.image && (
+            <img
+              src={session.user.image}
+              alt="avatar"
+              style={{ width: 28, height: 28, borderRadius: "50%", border: "1px solid rgba(196,160,100,0.4)" }}
+            />
+          )}
           <button
-            onClick={() => { setMessages([]); setStarted(false); setError(""); }}
+            onClick={() => signOut({ callbackUrl: "/" })}
             style={{
               fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "0.15em",
-              color: "rgba(232,228,217,0.4)", background: "transparent", border: "1px solid rgba(255,255,255,0.08)",
-              padding: "6px 14px", cursor: "pointer", transition: "all 0.2s",
+              color: "rgba(232,228,217,0.4)", background: "transparent",
+              border: "1px solid rgba(255,255,255,0.08)", padding: "6px 14px", cursor: "pointer",
             }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = "0.8")}
-            onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
           >
-            NEW TRIP
+            SIGN OUT
           </button>
-        )}
+        </div>
       </nav>
 
       {/* MAIN CONTENT */}
@@ -282,13 +313,12 @@ export default function PlannerPage() {
               ✦
             </div>
             <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 300, textAlign: "center", lineHeight: 1.1, marginBottom: "14px" }}>
-              Plan your<br /><em style={{ color: "#c4a064" }}>European adventure</em>
+              Welcome back, <em style={{ color: "#c4a064" }}>{session.user?.name?.split(" ")[0] ?? "traveller"}</em>
             </h1>
             <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "17px", fontWeight: 300, opacity: 0.5, textAlign: "center", maxWidth: "400px", lineHeight: 1.7, marginBottom: "40px" }}>
               Describe your dream trip in plain language — destination, duration, budget, interests — and I'll craft your perfect itinerary.
             </p>
 
-            {/* Suggestion chips */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center", maxWidth: "620px" }}>
               {SUGGESTIONS.map((s) => (
                 <button key={s} className="suggestion-chip" style={{ padding: "8px 16px", fontSize: "14px", fontStyle: "italic" }}
@@ -331,11 +361,8 @@ export default function PlannerPage() {
           <div style={{
             border: "1px solid rgba(196,160,100,0.25)",
             background: "rgba(255,255,255,0.02)",
-            display: "flex", alignItems: "flex-end", gap: "0",
-            transition: "border-color 0.2s",
-          }}
-            onFocus={() => { }}
-          >
+            display: "flex", alignItems: "flex-end",
+          }}>
             <textarea
               ref={inputRef}
               value={input}
@@ -362,7 +389,7 @@ export default function PlannerPage() {
             </button>
           </div>
           <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", opacity: 0.25, textAlign: "center", marginTop: "10px", letterSpacing: "0.15em" }}>
-            ENTER TO SEND · SHIFT+ENTER FOR NEW LINE · POWERED BY CLAUDE
+            ENTER TO SEND · SHIFT+ENTER FOR NEW LINE · POWERED BY GROQ
           </p>
         </div>
       </div>
