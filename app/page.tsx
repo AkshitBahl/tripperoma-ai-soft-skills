@@ -20,7 +20,7 @@ const features = [
   {
     icon: "◈",
     title: "Smart Destination Match",
-    desc: "Answer a few questions and our AI finds your perfect European destination — from hidden villages to iconic cities.",
+    desc: "Answer a few questions and our AI finds your perfect Worldan destination — from hidden villages to iconic cities.",
   },
   {
     icon: "⬡",
@@ -34,326 +34,374 @@ const features = [
   },
 ];
 
+const placeholders = [
+  "10 days in Italy, history lover, €2000 budget…",
+  "Romantic weekend in Paris with my partner…",
+  "Solo backpacking across Eastern World…",
+  "Family trip to Spain, 2 kids, 2 weeks…",
+];
+
+const marqueeItems = ["Paris", "Rome", "Barcelona", "Amsterdam", "Prague", "Vienna", "Lisbon", "Santorini", "Dubrovnik", "Florence", "Budapest", "Copenhagen"];
+
 export default function LandingPage() {
   const [query, setQuery] = useState("");
   const [activeIdx, setActiveIdx] = useState(0);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const interval = setInterval(() => {
-      setActiveIdx((i) => (i + 1) % destinations.length);
-    }, 2500);
-    return () => clearInterval(interval);
-  }, []);
-
-  const placeholders = [
-    "10 days in Italy, history lover, €2000 budget…",
-    "Romantic weekend in Paris with my partner…",
-    "Solo backpacking across Eastern Europe…",
-    "Family trip to Spain, 2 kids, 2 weeks…",
-  ];
   const [phIdx, setPhIdx] = useState(0);
+
   useEffect(() => {
-    const t = setInterval(() => setPhIdx((i) => (i + 1) % placeholders.length), 3000);
-    return () => clearInterval(t);
+    const t1 = setInterval(() => setActiveIdx((i) => (i + 1) % destinations.length), 2500);
+    const t2 = setInterval(() => setPhIdx((i) => (i + 1) % placeholders.length), 3000);
+    return () => { clearInterval(t1); clearInterval(t2); };
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#0a0a0f] text-[#e8e4d9] overflow-x-hidden font-serif">
+    <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap');
-        
-        * { box-sizing: border-box; }
-        body { font-family: 'Cormorant Garamond', Georgia, serif; }
-        .mono { font-family: 'DM Mono', monospace; }
-
-        .grain::before {
-          content: '';
-          position: fixed; inset: 0;
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-          pointer-events: none; z-index: 100; opacity: 0.35;
-        }
-
-        .hero-glow {
-          position: absolute;
-          width: 700px; height: 700px;
-          background: radial-gradient(circle, rgba(196,160,100,0.12) 0%, transparent 70%);
-          border-radius: 50%;
-          top: -200px; left: 50%; transform: translateX(-50%);
-          pointer-events: none;
-        }
-
-        .fade-in { animation: fadeUp 0.9s ease forwards; opacity: 0; }
-        .fade-in-1 { animation-delay: 0.1s; }
-        .fade-in-2 { animation-delay: 0.3s; }
-        .fade-in-3 { animation-delay: 0.5s; }
-        .fade-in-4 { animation-delay: 0.7s; }
-        .fade-in-5 { animation-delay: 0.9s; }
-
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(24px); }
           to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .dest-card {
-          transition: transform 0.4s ease, opacity 0.4s ease;
-        }
-        .dest-card:hover { transform: translateY(-6px); }
-
-        .input-glow:focus {
-          outline: none;
-          box-shadow: 0 0 0 1px rgba(196,160,100,0.5), 0 0 30px rgba(196,160,100,0.1);
-        }
-
-        .line-deco {
-          width: 40px; height: 1px;
-          background: linear-gradient(90deg, rgba(196,160,100,0.8), transparent);
-          display: inline-block;
-          vertical-align: middle; margin-right: 12px;
-        }
-
-        .feature-card {
-          border: 1px solid rgba(196,160,100,0.12);
-          transition: border-color 0.3s, background 0.3s;
-        }
-        .feature-card:hover {
-          border-color: rgba(196,160,100,0.35);
-          background: rgba(196,160,100,0.04);
-        }
-
-        .cta-btn {
-          background: linear-gradient(135deg, #c4a064, #a0794a);
-          transition: opacity 0.2s, transform 0.2s;
-        }
-        .cta-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-
-        .scroll-line {
-          width: 1px; height: 60px;
-          background: linear-gradient(to bottom, rgba(196,160,100,0.6), transparent);
-          margin: 0 auto;
-          animation: scrollPulse 2s ease-in-out infinite;
-        }
-        @keyframes scrollPulse {
-          0%, 100% { opacity: 0.4; }
-          50% { opacity: 1; }
-        }
-
-        .marquee-track {
-          display: flex; gap: 48px; white-space: nowrap;
-          animation: marquee 20s linear infinite;
         }
         @keyframes marquee {
           from { transform: translateX(0); }
           to   { transform: translateX(-50%); }
         }
+        @keyframes scrollPulse {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 0.8; }
+        }
+
+        .fade1 { animation: fadeUp 0.8s ease 0.1s both; }
+        .fade2 { animation: fadeUp 0.8s ease 0.3s both; }
+        .fade3 { animation: fadeUp 0.8s ease 0.5s both; }
+        .fade4 { animation: fadeUp 0.8s ease 0.7s both; }
+        .fade5 { animation: fadeUp 0.8s ease 0.9s both; }
+
+        .nav-link {
+          font-family: 'DM Mono', monospace;
+          font-size: 11px;
+          letter-spacing: 0.25em;
+          color: rgba(232,228,217,0.55);
+          text-decoration: none;
+          transition: color 0.2s;
+        }
+        .nav-link:hover { color: #e8e4d9; }
+
+        .cta-btn {
+          background: linear-gradient(135deg, #c4a064, #a0794a);
+          border: none;
+          color: #0a0a0f;
+          font-family: 'DM Mono', monospace;
+          font-size: 11px;
+          letter-spacing: 0.2em;
+          padding: 11px 24px;
+          cursor: pointer;
+          transition: opacity 0.2s, transform 0.15s;
+          white-space: nowrap;
+          text-decoration: none;
+          display: inline-block;
+        }
+        .cta-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+        .search-wrap {
+          display: flex;
+          border: 1px solid rgba(196,160,100,0.3);
+          max-width: 620px;
+          width: 100%;
+        }
+        .search-input {
+          flex: 1;
+          background: transparent;
+          border: none;
+          outline: none;
+          padding: 15px 20px;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 17px;
+          font-style: italic;
+          color: #e8e4d9;
+        }
+        .search-input::placeholder { color: rgba(232,228,217,0.3); }
+
+        .dest-card {
+          padding: 28px;
+          border: 1px solid rgba(196,160,100,0.1);
+          cursor: pointer;
+          transition: all 0.35s ease;
+        }
+        .dest-card:hover { transform: translateY(-4px); }
+
+        .feature-card {
+          padding: 32px;
+          border: 1px solid rgba(196,160,100,0.1);
+          transition: border-color 0.3s, background 0.3s;
+        }
+        .feature-card:hover {
+          border-color: rgba(196,160,100,0.3);
+          background: rgba(196,160,100,0.04);
+        }
+
+        .step-row {
+          display: flex;
+          gap: 32px;
+          padding: 32px 0;
+          border-bottom: 1px solid rgba(196,160,100,0.1);
+          align-items: flex-start;
+        }
+
+        .marquee-track {
+          display: flex;
+          gap: 40px;
+          white-space: nowrap;
+          animation: marquee 22s linear infinite;
+        }
+
+        .scroll-line {
+          width: 1px;
+          height: 52px;
+          background: linear-gradient(to bottom, rgba(196,160,100,0.6), transparent);
+          margin: 0 auto;
+          animation: scrollPulse 2s ease-in-out infinite;
+        }
+
+        .section-label {
+          font-family: 'DM Mono', monospace;
+          font-size: 10px;
+          letter-spacing: 0.3em;
+          color: #c4a064;
+          opacity: 0.55;
+          margin-bottom: 14px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .section-label::before {
+          content: '';
+          display: inline-block;
+          width: 28px;
+          height: 1px;
+          background: rgba(196,160,100,0.6);
+        }
       `}</style>
 
-      <div className="grain" />
+      <div style={{ background: "#0a0a0f", color: "#e8e4d9", fontFamily: "'Cormorant Garamond', serif", overflowX: "hidden" }}>
 
-      {/* NAV */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-8 py-5 flex items-center justify-between"
-        style={{ background: "linear-gradient(to bottom, rgba(10,10,15,0.95), transparent)" }}>
-        <div className="flex items-center gap-2">
-          <span style={{ fontSize: "22px" }}>✦</span>
-          <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 300, letterSpacing: "0.15em" }}>
-            EUROTRIP <em>AI</em>
-          </span>
-        </div>
-        <div className="flex items-center gap-8">
-          {["Destinations", "Features", "How It Works"].map((item) => (
-            <a key={item} href={`#${item.toLowerCase().replace(/ /g, "-")}`}
-              className="mono text-xs tracking-widest opacity-60 hover:opacity-100 transition-opacity hidden md:block">
-              {item.toUpperCase()}
-            </a>
-          ))}
-          <Link href="/planner">
-            <button className="cta-btn mono text-xs tracking-widest px-5 py-2 text-[#0a0a0f] font-medium rounded-none">
-              PLAN TRIP →
-            </button>
-          </Link>
-        </div>
-      </nav>
+        {/* GRAIN OVERLAY */}
+        <div style={{
+          position: "fixed", inset: 0, pointerEvents: "none", zIndex: 100,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E")`,
+          opacity: 0.35,
+        }} />
 
-      {/* HERO */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16 text-center">
-        <div className="hero-glow" />
+        {/* NAV */}
+        <nav style={{
+          position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
+          padding: "18px 48px",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          background: "linear-gradient(to bottom, rgba(10,10,15,0.97), rgba(10,10,15,0))",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ color: "#c4a064", fontSize: "18px" }}>✦</span>
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "17px", fontWeight: 300, letterSpacing: "0.18em", color: "#e8e4d9" }}>
+              TRIPPEROMA <em>AI</em>
+            </span>
+          </div>
 
-        <div className="fade-in fade-in-1 mono text-xs tracking-[0.3em] opacity-50 mb-8"
-          style={{ color: "#c4a064" }}>
-          ◦ AI-POWERED EUROPEAN TRAVEL ◦
-        </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
+            <a href="#destinations" className="nav-link">DESTINATIONS</a>
+            <a href="#features" className="nav-link">FEATURES</a>
+            <a href="#how-it-works" className="nav-link">HOW IT WORKS</a>
+            <Link href="/planner" className="cta-btn">PLAN TRIP →</Link>
+          </div>
+        </nav>
 
-        <h1 className="fade-in fade-in-2 relative"
-          style={{ fontSize: "clamp(52px, 10vw, 110px)", fontWeight: 300, lineHeight: 0.95, letterSpacing: "-0.01em", maxWidth: "900px" }}>
-          Your Europe,{" "}
-          <span style={{ fontStyle: "italic", color: "#c4a064" }}>perfectly</span>
-          <br />planned.
-        </h1>
+        {/* HERO */}
+        <section style={{
+          minHeight: "100vh",
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
+          textAlign: "center",
+          padding: "120px 32px 80px",
+          position: "relative",
+        }}>
+          {/* glow */}
+          <div style={{
+            position: "absolute", top: "-100px", left: "50%", transform: "translateX(-50%)",
+            width: "600px", height: "600px", borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(196,160,100,0.1) 0%, transparent 70%)",
+            pointerEvents: "none",
+          }} />
 
-        <p className="fade-in fade-in-3 mt-8 opacity-60 max-w-md"
-          style={{ fontSize: "18px", fontWeight: 300, lineHeight: 1.7 }}>
-          Tell our AI your dream. Get a bespoke itinerary for anywhere in Europe — in seconds.
-        </p>
+          <div className="fade1" style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "0.35em", color: "#c4a064", opacity: 0.7, marginBottom: "28px" }}>
+            ◦ AI-POWERED TRAVEL PLANNER ◦
+          </div>
 
-        {/* Search Bar */}
-        <div className="fade-in fade-in-4 mt-12 w-full max-w-2xl">
-          <div className="flex gap-0" style={{ border: "1px solid rgba(196,160,100,0.3)" }}>
+          <h1 className="fade2" style={{ fontSize: "clamp(52px, 9vw, 108px)", fontWeight: 300, lineHeight: 0.95, letterSpacing: "-0.01em", maxWidth: "900px", margin: "0 0 24px" }}>
+            Your World Trip,{" "}
+            <em style={{ color: "#c4a064" }}>perfectly</em>
+            <br />planned.
+          </h1>
+
+          <p className="fade3" style={{ fontSize: "18px", fontWeight: 300, opacity: 0.55, maxWidth: "420px", lineHeight: 1.75, margin: "0 0 44px" }}>
+            Tell our AI your dream. Get a bespoke itinerary for anywhere in the world — in seconds.
+          </p>
+
+          <div className="fade4 search-wrap">
             <input
+              className="search-input"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={placeholders[phIdx]}
-              className="input-glow flex-1 bg-transparent px-6 py-4 text-[#e8e4d9] placeholder-opacity-30"
-              style={{ fontSize: "16px", fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", outline: "none", color: "#e8e4d9" }}
               onKeyDown={(e) => e.key === "Enter" && window.location.assign("/planner")}
             />
-            <Link href="/planner">
-              <button className="cta-btn px-8 py-4 mono text-xs tracking-widest text-[#0a0a0f] font-medium whitespace-nowrap">
-                START →
-              </button>
+            <Link href="/planner" className="cta-btn" style={{ padding: "15px 28px", display: "flex", alignItems: "center" }}>
+              START →
             </Link>
           </div>
-          <p className="mono text-xs opacity-30 mt-3 tracking-widest">
+
+          <div className="fade5" style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", opacity: 0.25, letterSpacing: "0.18em", marginTop: "14px" }}>
             PRESS ENTER OR CLICK START TO BEGIN YOUR JOURNEY
-          </p>
-        </div>
+          </div>
 
-        {/* Scroll indicator */}
-        <div className="fade-in fade-in-5 absolute bottom-12 left-1/2 -translate-x-1/2">
-          <div className="scroll-line" />
-        </div>
-      </section>
+          <div style={{ position: "absolute", bottom: "40px", left: "50%" , transform: "translateX(-50%)"}}>
+            <div className="scroll-line" />
+          </div>
+        </section>
 
-      {/* MARQUEE */}
-      <div className="py-5 overflow-hidden" style={{ borderTop: "1px solid rgba(196,160,100,0.1)", borderBottom: "1px solid rgba(196,160,100,0.1)", background: "rgba(196,160,100,0.03)" }}>
-        <div className="marquee-track">
-          {[...Array(2)].map((_, i) =>
-            ["Paris", "Rome", "Barcelona", "Amsterdam", "Prague", "Vienna", "Lisbon", "Santorini", "Dubrovnik", "Florence", "Budapest", "Copenhagen"].map((city) => (
-              <span key={`${city}-${i}`} className="mono text-xs tracking-widest opacity-40" style={{ color: "#c4a064" }}>
+        {/* MARQUEE */}
+        <div style={{
+          padding: "18px 0", overflow: "hidden",
+          borderTop: "1px solid rgba(196,160,100,0.1)",
+          borderBottom: "1px solid rgba(196,160,100,0.1)",
+          background: "rgba(196,160,100,0.025)",
+        }}>
+          <div className="marquee-track">
+            {[...marqueeItems, ...marqueeItems].map((city, i) => (
+              <span key={i} style={{ fontFamily: "'DM Mono', monospace", fontSize: "11px", letterSpacing: "0.28em", color: "#c4a064", opacity: 0.45 }}>
                 {city.toUpperCase()} &nbsp;◦
               </span>
-            ))
-          )}
-        </div>
-      </div>
-
-      {/* DESTINATIONS */}
-      <section id="destinations" className="px-6 py-32 max-w-6xl mx-auto">
-        <div className="mb-16">
-          <div className="mono text-xs tracking-[0.3em] opacity-40 mb-4" style={{ color: "#c4a064" }}>
-            <span className="line-deco" />01 / DESTINATIONS
-          </div>
-          <h2 style={{ fontSize: "clamp(36px, 5vw, 60px)", fontWeight: 300, letterSpacing: "-0.01em" }}>
-            Where will you <em style={{ color: "#c4a064" }}>wander?</em>
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {destinations.map((d, i) => (
-            <div key={d.city}
-              className="dest-card p-8 cursor-pointer"
-              style={{
-                border: `1px solid ${activeIdx === i ? "rgba(196,160,100,0.5)" : "rgba(196,160,100,0.1)"}`,
-                background: activeIdx === i ? "rgba(196,160,100,0.06)" : "transparent",
-                transition: "all 0.4s ease"
-              }}
-              onClick={() => setActiveIdx(i)}>
-              <div style={{ fontSize: "32px", marginBottom: "12px" }}>{d.emoji}</div>
-              <div style={{ fontSize: "22px", fontWeight: 300 }}>{d.city}</div>
-              <div className="mono text-xs opacity-40 mt-1 tracking-widest">{d.country.toUpperCase()}</div>
-              <div className="mono text-xs mt-3 tracking-widest"
-                style={{ color: "#c4a064", opacity: activeIdx === i ? 1 : 0.5 }}>
-                {d.tag}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* FEATURES */}
-      <section id="features" className="px-6 py-24" style={{ background: "rgba(196,160,100,0.03)", borderTop: "1px solid rgba(196,160,100,0.08)" }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-16">
-            <div className="mono text-xs tracking-[0.3em] opacity-40 mb-4" style={{ color: "#c4a064" }}>
-              <span className="line-deco" />02 / FEATURES
-            </div>
-            <h2 style={{ fontSize: "clamp(36px, 5vw, 60px)", fontWeight: 300 }}>
-              Powered by <em style={{ color: "#c4a064" }}>intelligence.</em>
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            {features.map((f) => (
-              <div key={f.title} className="feature-card p-8">
-                <div style={{ fontSize: "24px", color: "#c4a064", marginBottom: "16px" }}>{f.icon}</div>
-                <h3 style={{ fontSize: "22px", fontWeight: 400, marginBottom: "12px" }}>{f.title}</h3>
-                <p className="opacity-60" style={{ fontSize: "16px", fontWeight: 300, lineHeight: 1.7 }}>{f.desc}</p>
-              </div>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* HOW IT WORKS */}
-      <section id="how-it-works" className="px-6 py-32 max-w-4xl mx-auto">
-        <div className="mb-16">
-          <div className="mono text-xs tracking-[0.3em] opacity-40 mb-4" style={{ color: "#c4a064" }}>
-            <span className="line-deco" />03 / HOW IT WORKS
+        {/* DESTINATIONS */}
+        <section id="destinations" style={{ padding: "100px 48px", maxWidth: "1200px", margin: "0 auto" }}>
+          <div style={{ marginBottom: "52px" }}>
+            <div className="section-label">01 / DESTINATIONS</div>
+            <h2 style={{ fontSize: "clamp(36px, 5vw, 58px)", fontWeight: 300, margin: 0 }}>
+              Where will you <em style={{ color: "#c4a064" }}>wander?</em>
+            </h2>
           </div>
-          <h2 style={{ fontSize: "clamp(36px, 5vw, 60px)", fontWeight: 300 }}>
-            Three steps to your <em style={{ color: "#c4a064" }}>perfect trip.</em>
-          </h2>
-        </div>
 
-        <div className="space-y-0">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "14px" }}>
+            {destinations.map((d, i) => (
+              <div
+                key={d.city}
+                className="dest-card"
+                style={{
+                  borderColor: activeIdx === i ? "rgba(196,160,100,0.45)" : "rgba(196,160,100,0.1)",
+                  background: activeIdx === i ? "rgba(196,160,100,0.06)" : "transparent",
+                }}
+                onClick={() => setActiveIdx(i)}
+              >
+                <div style={{ fontSize: "28px", marginBottom: "12px" }}>{d.emoji}</div>
+                <div style={{ fontSize: "22px", fontWeight: 300 }}>{d.city}</div>
+                <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", opacity: 0.4, marginTop: "4px", letterSpacing: "0.15em" }}>{d.country.toUpperCase()}</div>
+                <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", color: "#c4a064", opacity: activeIdx === i ? 1 : 0.45, marginTop: "10px", letterSpacing: "0.12em" }}>
+                  {d.tag}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* FEATURES */}
+        <section id="features" style={{
+          padding: "100px 48px",
+          background: "rgba(196,160,100,0.025)",
+          borderTop: "1px solid rgba(196,160,100,0.08)",
+        }}>
+          <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+            <div style={{ marginBottom: "52px" }}>
+              <div className="section-label">02 / FEATURES</div>
+              <h2 style={{ fontSize: "clamp(36px, 5vw, 58px)", fontWeight: 300, margin: 0 }}>
+                Powered by <em style={{ color: "#c4a064" }}>intelligence.</em>
+              </h2>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "14px" }}>
+              {features.map((f) => (
+                <div key={f.title} className="feature-card">
+                  <div style={{ fontSize: "22px", color: "#c4a064", marginBottom: "16px" }}>{f.icon}</div>
+                  <h3 style={{ fontSize: "22px", fontWeight: 400, margin: "0 0 12px" }}>{f.title}</h3>
+                  <p style={{ fontSize: "16px", fontWeight: 300, opacity: 0.6, lineHeight: 1.75, margin: 0 }}>{f.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* HOW IT WORKS */}
+        <section id="how-it-works" style={{ padding: "100px 48px", maxWidth: "800px", margin: "0 auto" }}>
+          <div style={{ marginBottom: "52px" }}>
+            <div className="section-label">03 / HOW IT WORKS</div>
+            <h2 style={{ fontSize: "clamp(36px, 5vw, 58px)", fontWeight: 300, margin: 0 }}>
+              Three steps to your <em style={{ color: "#c4a064" }}>perfect trip.</em>
+            </h2>
+          </div>
+
           {[
             { n: "01", title: "Describe your trip", body: "Tell the AI where you want to go, for how long, your budget, interests, and travel style. Natural language — no forms." },
             { n: "02", title: "Get your itinerary", body: "Within seconds, receive a full day-by-day itinerary with restaurants, activities, transport tips, and cultural insights." },
             { n: "03", title: "Refine & explore", body: "Ask follow-up questions, swap activities, adjust the pace. Your itinerary evolves with you in real time." },
-          ].map((step, i) => (
-            <div key={step.n} className="flex gap-8 py-10"
-              style={{ borderBottom: "1px solid rgba(196,160,100,0.1)" }}>
-              <div className="mono text-xs tracking-widest opacity-30 pt-1 w-8 shrink-0"
-                style={{ color: "#c4a064" }}>{step.n}</div>
+          ].map((step) => (
+            <div key={step.n} className="step-row">
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "11px", color: "#c4a064", opacity: 0.45, letterSpacing: "0.1em", paddingTop: "4px", width: "28px", flexShrink: 0 }}>
+                {step.n}
+              </div>
               <div>
-                <h3 style={{ fontSize: "26px", fontWeight: 300, marginBottom: "10px" }}>{step.title}</h3>
-                <p className="opacity-60" style={{ fontSize: "16px", fontWeight: 300, lineHeight: 1.7 }}>{step.body}</p>
+                <h3 style={{ fontSize: "26px", fontWeight: 300, margin: "0 0 10px" }}>{step.title}</h3>
+                <p style={{ fontSize: "16px", fontWeight: 300, opacity: 0.6, lineHeight: 1.75, margin: 0 }}>{step.body}</p>
               </div>
             </div>
           ))}
-        </div>
-      </section>
+        </section>
 
-      {/* CTA SECTION */}
-      <section className="px-6 py-32 text-center" style={{ background: "rgba(196,160,100,0.04)", borderTop: "1px solid rgba(196,160,100,0.1)" }}>
-        <div className="mono text-xs tracking-[0.3em] opacity-40 mb-6" style={{ color: "#c4a064" }}>
-          ◦ BEGIN YOUR JOURNEY ◦
-        </div>
-        <h2 style={{ fontSize: "clamp(40px, 7vw, 80px)", fontWeight: 300, lineHeight: 1 }}>
-          Europe is waiting<br />
-          <em style={{ color: "#c4a064" }}>for you.</em>
-        </h2>
-        <p className="mt-6 opacity-50 max-w-sm mx-auto" style={{ fontSize: "18px", fontWeight: 300, lineHeight: 1.7 }}>
-          Start planning your trip with AI — free, fast, and beautifully personal.
-        </p>
-        <Link href="/planner">
-          <button className="cta-btn mt-10 mono text-sm tracking-widest px-12 py-4 text-[#0a0a0f] font-medium">
+        {/* CTA */}
+        <section style={{
+          padding: "100px 48px",
+          textAlign: "center",
+          background: "rgba(196,160,100,0.03)",
+          borderTop: "1px solid rgba(196,160,100,0.1)",
+        }}>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "0.35em", color: "#c4a064", opacity: 0.55, marginBottom: "24px" }}>
+            ◦ BEGIN YOUR JOURNEY ◦
+          </div>
+          <h2 style={{ fontSize: "clamp(40px, 7vw, 80px)", fontWeight: 300, lineHeight: 1, margin: "0 0 20px" }}>
+            World is waiting<br /><em style={{ color: "#c4a064" }}>for you.</em>
+          </h2>
+          <p style={{ fontSize: "18px", fontWeight: 300, opacity: 0.5, maxWidth: "360px", margin: "0 auto 40px", lineHeight: 1.75 }}>
+            Start planning your trip with AI — free, fast, and beautifully personal.
+          </p>
+          <Link href="/planner" className="cta-btn" style={{ fontSize: "12px", padding: "16px 48px" }}>
             START PLANNING →
-          </button>
-        </Link>
-      </section>
+          </Link>
+        </section>
 
-      {/* FOOTER */}
-      <footer className="px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4"
-        style={{ borderTop: "1px solid rgba(196,160,100,0.1)" }}>
-        <div className="flex items-center gap-2 opacity-50">
-          <span>✦</span>
-          <span className="mono text-xs tracking-widest">EUROTRIP AI — BUILT WITH CLAUDE</span>
-        </div>
-        <div className="mono text-xs opacity-30 tracking-widest">
-          AI-POWERED TRAVEL PLANNING © 2025
-        </div>
-      </footer>
-    </main>
+        {/* FOOTER */}
+        <footer style={{
+          padding: "28px 48px",
+          borderTop: "1px solid rgba(196,160,100,0.1)",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", opacity: 0.4 }}>
+            <span style={{ color: "#c4a064" }}>✦</span>
+            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "0.18em" }}>Tripperoma AI — BUILT WITH GROQ</span>
+          </div>
+          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", opacity: 0.25, letterSpacing: "0.15em" }}>
+            AI-POWERED TRAVEL PLANNING © 2025
+          </div>
+        </footer>
+
+      </div>
+    </>
   );
 }

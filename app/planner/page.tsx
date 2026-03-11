@@ -261,7 +261,7 @@ export default function PlannerPage() {
         <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "8px", color: "#e8e4d9" }}>
           <span style={{ color: "#c4a064", fontSize: "16px" }}>✦</span>
           <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "16px", fontWeight: 300, letterSpacing: "0.15em" }}>
-            EUROTRIP <em>AI</em>
+            Tripperoma <em>AI</em>
           </span>
         </Link>
 
@@ -300,6 +300,9 @@ export default function PlannerPage() {
           >
             SIGN OUT
           </button>
+          <Link href="/profile" style={{ fontFamily: "'DM Mono', monospace", fontSize: "10px", letterSpacing: "0.15em", color: "rgba(232,228,217,0.4)", textDecoration: "none", border: "1px solid rgba(255,255,255,0.08)", padding: "6px 14px" }}>
+            PROFILE
+          </Link>
         </div>
       </nav>
 
@@ -368,7 +371,7 @@ export default function PlannerPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Describe your dream European trip…"
+              placeholder="Describe your dream World trip…"
               rows={2}
               style={{
                 flex: 1, background: "transparent", border: "none",
